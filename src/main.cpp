@@ -23,6 +23,17 @@ void toggleFunc() {
   }
 }
 
+const char *HELP = R"(
+Enter a command:
+1. 'r' to start the timer
+2. 's' to stop the timer
+3. 'f<value>' to set frequency in Hz (e.g., 'f1000' for 1 Hz)
+4. 'p<value>' to set period in us (e.g., 'p1000' for 1 ms)
+5. 'd<value>' to set direction (e.g., 'd1' or 'd0' for high or low)
+)";
+const char *INVALID_COMMAND_MSG =
+    "Invalid command. Try 'r', 's', 'f<value>', 'p<value>', or 'd<value>'";
+
 void setup() {
   // Initialize pins
   pinMode(LED_BUILTIN, OUTPUT);
@@ -44,15 +55,7 @@ void setup() {
   Serial.println();
 
   // Print instructions to the Serial Monitor
-  Serial.println("Enter a command:");
-  Serial.println("1. 'r' to start the timer");
-  Serial.println("2. 's' to stop the timer");
-  Serial.println(
-      "3. 'f<value>' to set frequency in Hz (e.g., 'f1000' for 1 Hz)");
-  Serial.println("4. 'p<value>' to set period in us (e.g., 'p1000' for 1 ms)");
-  Serial.println(
-      "4. 'd<value>' to set direction (e.g., 'd1' or 'd0' for high or low)");
-  Serial.println();
+  Serial.println(HELP);
 }
 
 void processCommand(char *command);
@@ -147,9 +150,8 @@ void processCommand(char *command) {
     }
   } else {
     // Invalid command
+    Serial.println(INVALID_COMMAND_MSG);
     Serial.print("Received: ");
-    Serial.print(command);
-    Serial.println("Invalid command. Try 'r', 's', 'f<value>', 'p<value>', or "
-                   "'d<value>'.");
+    Serial.println(command);
   }
 }
