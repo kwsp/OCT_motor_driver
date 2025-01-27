@@ -24,12 +24,12 @@ void toggleFunc() {
 }
 
 const char *HELP = R"(
-Enter a command:
-1. 'r' to start the timer
-2. 's' to stop the timer
-3. 'f<value>' to set frequency in Hz (e.g., 'f1000' for 1 Hz)
-4. 'p<value>' to set period in us (e.g., 'p1000' for 1 ms)
-5. 'd<value>' to set direction (e.g., 'd1' or 'd0' for high or low)
+Enter a command:\r
+1. 'r' to start the timer\r
+2. 's' to stop the timer\r
+3. 'f<value>' to set frequency in Hz (e.g., 'f1000' for 1 Hz)\r
+4. 'p<value>' to set period in us (e.g., 'p1000' for 1 ms)\r
+5. 'd<value>' to set direction (e.g., 'd1' or 'd0' for high or low)\r
 )";
 const char *INVALID_COMMAND_MSG =
     "Invalid command. Try 'r', 's', 'f<value>', 'p<value>', or 'd<value>'";
