@@ -19,7 +19,11 @@ void toggleFunc() {
     toggleState = !toggleState;
     digitalWrite(LED_BUILTIN, toggleState); // Update the LED state
     digitalWrite(togglePin, toggleState);   // Update the target pin state
-    counter++;
+    counter += toggleState;
+  } else {
+    toggleState = false;
+    digitalWrite(LED_BUILTIN, toggleState); // Update the LED state
+    digitalWrite(togglePin, toggleState);   // Update the target pin state
   }
 }
 
@@ -108,7 +112,6 @@ void processCommand(char *command) {
   } else if (trimmedCommand[0] == 's') {
     // Stop the timer
     timerRunning = false;
-    digitalWrite(togglePin, LOW); // Ensure the LED is off
 
     Serial.println("Stopped");
   } else if (trimmedCommand[0] == 'f') {
