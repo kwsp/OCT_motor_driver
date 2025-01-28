@@ -28,12 +28,12 @@ void toggleFunc() {
 }
 
 const char *HELP = R"(
-Enter a command:\r
-1. 'r' to start the timer\r
-2. 's' to stop the timer\r
-3. 'f<value>' to set frequency in Hz (e.g., 'f1000' for 1 Hz)\r
-4. 'p<value>' to set period in us (e.g., 'p1000' for 1 ms)\r
-5. 'd<value>' to set direction (e.g., 'd1' or 'd0' for high or low)\r
+Enter a command:
+1. 'r' to start the timer
+2. 's' to stop the timer
+3. 'f<value>' to set frequency in Hz (e.g., 'f1000' for 1 Hz)
+4. 'p<value>' to set period in us (e.g., 'p1000' for 1 ms)
+5. 'd<value>' to set direction (e.g., 'd1' or 'd0' for high or low)
 )";
 const char *INVALID_COMMAND_MSG =
     "Invalid command. Try 'r', 's', 'f<value>', 'p<value>', or 'd<value>'";
@@ -56,10 +56,10 @@ void setup() {
 
   // Print version
   Serial.println(NAME_VERSION);
-  Serial.println();
 
   // Print instructions to the Serial Monitor
   Serial.println(HELP);
+  Serial.println();
 }
 
 void processCommand(char *command);
@@ -98,13 +98,11 @@ void loop() {
 void processCommand(char *command) {
   char *trimmedCommand = strtok(command, "\r\n");
 
+  // Parse the commands
   if (trimmedCommand == nullptr) {
     Serial.println("Error: Empty command.");
-    return;
-  }
 
-  // Parse the commands
-  if (trimmedCommand[0] == 'r') {
+  } else if (trimmedCommand[0] == 'r') {
     // Start the timer
     timerRunning = true;
 
@@ -157,4 +155,5 @@ void processCommand(char *command) {
     Serial.print("Received: ");
     Serial.println(command);
   }
+  Serial.println();
 }
