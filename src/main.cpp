@@ -1,11 +1,12 @@
 #include <Arduino.h>
 #include <TimerOne.h>
 
-const char *NAME_VERSION = "OCT Motor Driver v0.1.0";
+const char *NAME_VERSION = "OCT Motor Driver v0.2.0";
 
 // Pin definitions
-const int STEP_PIN = 6;
-const int DIR_PIN = 5;
+const int STEP_PIN = 6;      // 3D motor step pin
+const int DIR_PIN = 5;       // 3D motor direction pin
+const int ROTARY_EN_PIN = 8; // Rotary motor enable pin
 
 // Variables
 const int togglePin = STEP_PIN;
@@ -29,20 +30,33 @@ void toggleFunc() {
 
 const char *HELP = R"(
 Enter a command:
+
+Commands related to the 3D motor (square wave and direction)
 1. 'r' to start the timer
 2. 's' to stop the timer
 3. 'f<value>' to set frequency in Hz (e.g., 'f1000' for 1 Hz)
 4. 'p<value>' to set period in us (e.g., 'p1000' for 1 ms)
 5. 'd<value>' to set direction (e.g., 'd1' or 'd0' for high or low)
+
+Commands related to the rotation motor (on off)
+6. 'm0' to enable rotation or 'm1' to disable rotation
+
 )";
-const char *INVALID_COMMAND_MSG =
-    "Invalid command. Try 'r', 's', 'f<value>', 'p<value>', or 'd<value>'";
+
+const char *INVALID_COMMAND_MSG = "Invalid command. Try 'r', 's', 'f<value>', "
+                                  "'p<value>', 'd<value>', or 'm'";
 
 void setup() {
   // Initialize pins
   pinMode(LED_BUILTIN, OUTPUT);
+
+  // Pins for 3D motor control
   pinMode(STEP_PIN, OUTPUT);
   pinMode(DIR_PIN, OUTPUT);
+
+  // Pins for rotary motor control
+  pinMode(ROTARY_EN_PIN, OUTPUT);
+  digitalWrite(ROTARY_EN_PIN, HIGH);
 
   // Initialize serial comms
   Serial.begin(115200);
@@ -100,7 +114,7 @@ void processCommand(char *command) {
 
   // Parse the commands
   if (trimmedCommand == nullptr) {
-    Serial.println("Error: Empty command.");
+    Serial.println("Error: Empty command");
 
   } else if (trimmedCommand[0] == 'r') {
     // Start the timer
@@ -112,6 +126,19 @@ void processCommand(char *command) {
     timerRunning = false;
 
     Serial.println("Stopped");
+
+  } else if (trimmedCommand[0] == 'm') {
+    // Rotary motor enable command
+    if (strlen(trimmedCommand) == 2) {
+      const uint8_t enablePinVal = trimmedCommand[1] == '0' ? LOW : HIGH;
+      digitalWrite(ROTARY_EN_PIN, enablePinVal);
+
+      Serial.print("Rotary enable set to ");
+      Serial.println(enablePinVal);
+    } else {
+      Serial.println("Error: rotary enable must be m0 or m1");
+    }
+
   } else if (trimmedCommand[0] == 'f') {
     // Set frequency command
     unsigned long frequency = atol(trimmedCommand + 1);
@@ -123,7 +150,7 @@ void processCommand(char *command) {
       Serial.print(frequency);
       Serial.println(" Hz");
     } else {
-      Serial.println("Error: frequency must be positive.");
+      Serial.println("Error: frequency must be positive");
     }
   } else if (trimmedCommand[0] == 'p') {
     // Set period command
@@ -136,12 +163,12 @@ void processCommand(char *command) {
       Serial.print(timerPeriod);
       Serial.println(" us");
     } else {
-      Serial.println("Error: frequency must be positive.");
+      Serial.println("Error: frequency must be positive");
     }
   } else if (trimmedCommand[0] == 'd') {
     // Set direction command
     if (strlen(trimmedCommand) == 2) {
-      uint8_t dir = trimmedCommand[1] - '0';
+      const uint8_t dir = trimmedCommand[1] == '0' ? LOW : HIGH;
       digitalWrite(DIR_PIN, dir);
 
       Serial.print("Set direction pin to ");
